@@ -1,6 +1,8 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local isDriving = false;
 local isUnderwater = false;
+local cashAmount = 0
+local bankAmount = 0
 
 QBCore = nil
 Citizen.CreateThread(function()
@@ -165,3 +167,36 @@ exports('Voicelevel', Voicelevel)
 
 RegisterCommand("togglehud",
                 function()  SendNUIMessage({action = "toggle_hud"}) end, false)
+-- Money HUD
+RegisterNetEvent('hud:client:ShowAccounts')
+AddEventHandler('hud:client:ShowAccounts', function(type, amount)
+    if type == 'cash' then
+        SendNUIMessage({
+            action = 'show',
+            type = 'cash',
+            cash = amount
+        })
+    else
+        SendNUIMessage({
+            action = 'show',
+            type = 'bank',
+            bank = amount
+        })
+    end
+end)
+
+RegisterNetEvent('hud:client:OnMoneyChange')
+AddEventHandler('hud:client:OnMoneyChange', function(type, amount, isMinus)
+    QBCore.Functions.GetPlayerData(function(PlayerData)
+        cashAmount = PlayerData.money['cash']
+        bankAmount = PlayerData.money['bank']
+    end)
+    SendNUIMessage({
+        action = 'update',
+        cash = cashAmount,
+        bank = bankAmount,
+        amount = amount,
+        minus = isMinus,
+        type = type
+    })
+end)
