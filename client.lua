@@ -160,7 +160,11 @@ CreateThread(function()
 end)
 
 function Voicelevel(val)
-    SendNUIMessage({action = "voice_level", voicelevel = val})
+    local talking = NetworkIsPlayerTalking(PlayerId())
+    local voice = 0
+    if LocalPlayer.state['proximity'] ~= nil then
+        voice = LocalPlayer.state['proximity'].distance
+    end
 end
 
 exports('Voicelevel', Voicelevel)
