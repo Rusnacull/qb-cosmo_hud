@@ -19,5 +19,5 @@ client_scripts {
 }
 
 server_script {
-    'server.lua
+    'server.lua'
 }
